@@ -5,30 +5,29 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class TerminalCheckers {
-    public static void main(String[] args) throws IOException {
-        char[][] field = {
-                {' ', 'P', ' ', 'P', ' ', 'P', ' ', 'P'},
-                {'P', ' ', 'P', ' ', 'P', ' ', 'P', ' '},
-                {' ', 'P', ' ', 'P', ' ', 'P', ' ', 'P'},
-                {'P', ' ', 'P', ' ', 'P', ' ', 'P', ' '},
-                {' ', 'P', ' ', 'P', ' ', 'P', ' ', 'P'},
-                {'P', ' ', 'P', ' ', 'P', ' ', 'P', ' '},
-                {' ', 'P', ' ', 'P', ' ', 'P', ' ', 'P'},
-                {'P', ' ', 'P', ' ', 'P', ' ', 'P', ' '},
-        };
+    static String[][] field;
 
-        BufferedReader bufReader = new BufferedReader(new InputStreamReader(System.in));
-        String command = bufReader.readLine();
+    static {
+        try {
+            field = new CreateField(new String[17][17]).getField();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        System.out.println("----Start game -> 'start'----");
+        BufferedReader buffReader = new BufferedReader(new InputStreamReader(System.in));
+        String command = buffReader.readLine();
 
         if (command.equals("start")) {
-
             while (true) {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
                 String s = bufferedReader.readLine();
 
                 if (s.equals("step")) {
-                    for (char[] i : field) {
-                        for (char j : i) {
+                    for (String[] i : field) {
+                        for (String j : i) {
                             System.out.print(j);
                         }
                         System.out.println();
