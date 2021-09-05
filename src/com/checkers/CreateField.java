@@ -15,10 +15,10 @@ public class CreateField {
     private void create(String[][] array) throws Exception {
 //      Create game field on given array
 
-        for(int i = 0; i < array.length; i++) {
-            if(i % 2 == 0) {
+        for (int i = 0; i < array.length; i++) {
+            if (i % 2 == 0) {
 
-                for(int j = 0; j < array.length; j++) {
+                for (int j = 0; j < array.length; j++) {
                     this.field[i][j] = "===";
                 }
 
@@ -26,15 +26,15 @@ public class CreateField {
                 int numberHorizontalField;
 
                 numberHorizontalField = getNumberHorizontalField(i);
-                if(numberHorizontalField == 0) {
+                if (numberHorizontalField == 0) {
                     throw new Exception("numberHorizontalField is zero!!!");
                 }
 
-                for(int j = 0; j < array.length; j++) {
-                    char symbolVerticalField = getSymbolVerticalField(j);
+                for (int j = 0; j < array.length; j++) {
+                    char symbolVerticalField = (char) getSymbolVerticalField(j);
 
                     int d = Character.compare(symbolVerticalField, ' ');
-                    if(d < 0) {
+                    if (d < 0) {
                         throw new Exception("symbolVerticalField is value empty!!!");
                     }
 
@@ -45,26 +45,49 @@ public class CreateField {
     }
 
     private void createWithOddI(int i, int j, int numberHorizontalField, char symbolVerticalField) {
-        if(j % 2 == 0) {
+        if (j % 2 == 0) {
             this.field[i][j] = "||";
         }
 
-        if(isOneEveryDamn(i)) {
-            if(isOneEveryDamn(j)) {
-                this.field[i][j] = "-----";
-            } else if(isThreeEveryDamn(j)) {
-                this.field[i][j] = String.format(
-                        " %s%s%s ", BlackChecker.color, symbolVerticalField, numberHorizontalField
-                );
-            }
-        }
+        // Create black checkers
+        if (i == 1 || i == 5) {
+            addCheckers(i, j, true, BlackChecker.color, numberHorizontalField, symbolVerticalField);
 
-        if(isThreeEveryDamn(i)) {
-            if(isThreeEveryDamn(j)) {
-                this.field[i][j] = "-----";
-            } else if(isOneEveryDamn(j)) {
+        } else if(i == 3) {
+            addCheckers(i, j, false, BlackChecker.color, numberHorizontalField, symbolVerticalField);
+
+        // Create empty zone
+        } else if(i == 9) {
+            addCheckers(i, j, true, " ", numberHorizontalField, symbolVerticalField);
+
+        } else if(i == 7) {
+            addCheckers(i, j, false, " ", numberHorizontalField, symbolVerticalField);
+
+        // Create white checkers
+        } else if(i == 13) {
+            addCheckers(i, j, true, WhiteChecker.color, numberHorizontalField, symbolVerticalField);
+
+        } else if(i == 11 || i == 15) {
+            addCheckers(i, j, false, WhiteChecker.color, numberHorizontalField, symbolVerticalField);
+        }
+    }
+
+    private void addCheckers(
+            int i, int j, boolean checkMethod, String string, int numberHorizontalField, char symbolVerticalField
+    ) {
+        boolean checkOne = checkMethod ? isOneEveryDamn(j) : isThreeEveryDamn(j);
+        boolean checkThree = !checkMethod ? isOneEveryDamn(j) : isThreeEveryDamn(j);
+
+        if (checkOne) {
+            this.field[i][j] = "----";
+        } else if (checkThree) {
+            if (" ".equals(string)) {
                 this.field[i][j] = String.format(
-                        " %s%s%s ", WhiteChecker.color, symbolVerticalField, numberHorizontalField
+                        " %s%s ", symbolVerticalField, numberHorizontalField
+                );
+            } else {
+                this.field[i][j] = String.format(
+                        "%s-%s%s", string, symbolVerticalField, numberHorizontalField
                 );
             }
         }
@@ -94,17 +117,18 @@ public class CreateField {
         };
     }
 
-    private char getSymbolVerticalField(int j) {
+    private int getSymbolVerticalField(int j) {
+        // Return abbreviated ASCII
         return switch (j) {
-            case 1 -> 'a';
-            case 3 -> 'b';
-            case 5 -> 'c';
-            case 7 -> 'd';
-            case 9 -> 'e';
-            case 11 -> 'f';
-            case 13 -> 'g';
-            case 15 -> 'h';
-            default -> ' ';
+            case 1 -> 97;
+            case 3 -> 98;
+            case 5 -> 99;
+            case 7 -> 100;
+            case 9 -> 101;
+            case 11 -> 102;
+            case 13 -> 103;
+            case 15 -> 104;
+            default -> 32;
         };
     }
 }
