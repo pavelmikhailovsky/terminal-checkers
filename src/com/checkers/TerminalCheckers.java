@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class TerminalCheckers {
     private static final String standardCommandStart = "start";
@@ -31,13 +32,12 @@ public class TerminalCheckers {
         );
 
         System.out.println("----Terminal checkers----\n");
-        System.out.println(
-                """
-                        start --> start game
-                        rules --> description game rules
-                        commands --> all commands game
-                        end game --> get out this game
-                        """);
+        System.out.printf("""
+                %s --> start game
+                %s --> description game rules
+                %s --> all commands game
+                %s --> get out this game
+                %n""", standardCommandStart, standardCommandRules, standardCommandCommands, standardCommandEndGame);
 
         command = teamCheck(commands);
 
@@ -96,8 +96,13 @@ public class TerminalCheckers {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
                 gameCommand = bufferedReader.readLine();
 
-                if (validateCommand(gameCommand)) {
-                    field = new UpdateField(field, gameCommand).getField();
+                if (validateCommand(gameCommand.substring(0, 3), gameCommand.substring(4))) {
+                    try {
+                        field = new UpdateField(field, gameCommand).getField();
+                    } catch (Exception e) {
+                        System.out.println("Try again");
+                        tryAgain = true;
+                    }
                     tryAgain = false;
                 } else if (validateStandardCommand(gameCommand)) {
                     tryAgain = false;
@@ -116,9 +121,9 @@ public class TerminalCheckers {
         if (gameCommand.equals(standardCommandStart)) startGame(gameCommand);
     }
 
-    static boolean validateCommand(String command) {
-
-        return true;
+    static boolean validateCommand(String checker, String stepChecker) {
+        // example Ba4 b5, Wb7 c6
+        return Pattern.matches("\\A[W-|B-][a-h][1-8]\\z", checker) && Pattern.matches("\\A[a-h][1-8]\\z", stepChecker);
     }
 
     static boolean validateStandardCommand(String command) {
@@ -126,14 +131,14 @@ public class TerminalCheckers {
     }
 
     static void commandsGame() throws IOException {
-        System.out.println("""
-                start --> start game
-                end game --> get out this game
-                get menu --> get out in menu
-                rules --> description game rules
+        System.out.printf("""
+                %s --> start game
+                %s --> get out this game
+                %s --> get out in menu
+                %s --> description game rules
                                 
                 get menu --> get out in menu
-                """);
+                """, standardCommandStart, standardCommandEndGame, standardCommandGetMenu, standardCommandRules);
 
         do {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -145,7 +150,7 @@ public class TerminalCheckers {
             } else {
                 System.out.println("Repeat you command");
             }
-        }while(true);
+        } while (true);
 
     }
 }
