@@ -25,7 +25,7 @@ public class TerminalCheckers {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         ArrayList<String> commands = new ArrayList<>();
         Collections.addAll(
                 commands, standardCommandCommands, standardCommandStart, standardCommandRules, standardCommandEndGame
@@ -72,7 +72,7 @@ public class TerminalCheckers {
         return string;
     }
 
-    static void startGame(String gameCommand) throws IOException {
+    static void startGame(String gameCommand) throws Exception {
         while (true) {
 
             if (gameCommand.equals(standardCommandEndGame)) {
@@ -99,11 +99,11 @@ public class TerminalCheckers {
                 if (validateCommand(gameCommand.substring(0, 3), gameCommand.substring(4))) {
                     try {
                         field = new UpdateField(field, gameCommand).getField();
+                        tryAgain = false;
                     } catch (Exception e) {
-                        System.out.println("Try again");
+                        System.out.println(e.getMessage());
                         tryAgain = true;
                     }
-                    tryAgain = false;
                 } else if (validateStandardCommand(gameCommand)) {
                     tryAgain = false;
                 } else {
@@ -114,7 +114,7 @@ public class TerminalCheckers {
         }
     }
 
-    static void startRulesGame() throws IOException {
+    static void startRulesGame() throws Exception {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         String gameCommand = bufferedReader.readLine();
 
@@ -130,7 +130,7 @@ public class TerminalCheckers {
         return Objects.equals(command, standardCommandEndGame) || Objects.equals(command, standardCommandGetMenu);
     }
 
-    static void commandsGame() throws IOException {
+    static void commandsGame() throws Exception {
         System.out.printf("""
                 %s --> start game
                 %s --> get out this game
